@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeMenuRecyclerView mRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-
+ //test
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
