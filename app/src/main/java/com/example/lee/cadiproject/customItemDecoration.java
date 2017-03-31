@@ -8,12 +8,14 @@ import android.view.View;
  * Created by Lee on 2017-03-29.
  */
 
+
 public class customItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-        outRect.set(10,10,10,10);
+        outRect.set(10,1,10,1);
+
 
 
     }
