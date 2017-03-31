@@ -3,8 +3,8 @@ package com.example.lee.cadiproject;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class Fragment1 extends Fragment {
     private List<Room> rooms;
     private myAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+
 
  //test
     @Override
@@ -107,7 +106,11 @@ public class Fragment1 extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mContext, "Hi " + room.roomName, Toast.LENGTH_SHORT).show();
+
+                    Snackbar.make(mRecyclerView, "Hi " + room.roomName, Snackbar.LENGTH_LONG).show();
+
+
+
                 }
             });
 
