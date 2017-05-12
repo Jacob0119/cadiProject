@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#004D40</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="red">#ffff4444</color>
-    <color name="white">#ffffff</color>
+<color name="colorPrimary">#009688</color>
+<color name="colorPrimaryDark">#00796B</color>
+<color name="colorPrimaryligt">#B2DFDB</color>
+<color name="colorAccent">#FF5722</color>
+<color name="primary_text">#212121</color>
+<color name="secondary_text">#757575</color>
+<color name="icons">#FFFFFF</color>
+<color name="divider">#BDBDBD</color>
+    <color name="fragment_back">#d7ccc8</color>
+    <color name="cardview_back">#f0eae8</color>
 </resources>
+
+
+

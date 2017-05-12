@@ -1,168 +1,147 @@
 package com.example.lee.cadiproject;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.tubb.smrv.SwipeMenuLayout;
-import com.tubb.smrv.SwipeMenuRecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Context mContext;
-    private List<Room> rooms;
-    private myAdapter mAdapter;
-    private SwipeMenuRecyclerView mRecyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
- //test
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private FloatingActionButton fab;
+    private int[] tabIcons={
+            R.drawable.home,
+            R.drawable.chat,
+            R.drawable.file,
+            R.drawable.info
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContext= this;
+        fab=(FloatingActionButton)findViewById(R.id.fab);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        getUsers();// 테스트용 데이터 만들기
-        swipeRefreshLayout=(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        if(tabLayout.getSelectedTabPosition()!=1){
+            fab.hide();
+        }
+        setTabIcon();
+        tabLayout.setupWithViewPager(viewPager);
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onRefresh() {
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition()==1)
+                    fab.show();
+                else
+                    fab.hide();
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-                Toast.makeText(mContext, "refreshing completed!",Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        mRecyclerView = (SwipeMenuRecyclerView) findViewById(R.id.listview);
-        mRecyclerView.addItemDecoration(new customItemDecoration());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // interpolator setting
-        mRecyclerView.setOpenInterpolator(new BounceInterpolator());
-        mRecyclerView.setCloseInterpolator(new BounceInterpolator());
-        mAdapter = new myAdapter(mContext, rooms);
-        mRecyclerView.setAdapter(mAdapter);
-
-//
     }
 
-    private void getUsers() {
-        rooms = new ArrayList<>();
-        for (int i=0; i<100; i++){
-            Room room = new Room(i+1,"school"+(i+1));
+    private void setTabIcon(){
 
-            rooms.add(room);
-        }
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
 
     }
 
-    class myAdapter extends RecyclerView.Adapter{
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
 
-        Context mContext;
-        List<Room> rooms;
-        myAdapter(Context mContext,List rooms){
-            this.mContext=mContext;
-            this.rooms=rooms;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.search:
+                Intent intent=new Intent(this,searchActivity.class);
+
+                startActivity(intent);
+
+                break;
+
         }
 
+        return true;
+    }
 
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-            View itemView = LayoutInflater.from(this.mContext).inflate(R.layout.item_simple,parent,false);
-            return new MyViewHolder(itemView);
-        }
+        adapter.addFragment(new fragMain(), "Main");
+        adapter.addFragment(new fragChatroom(), "Chat");
+        adapter.addFragment(new Fragment3(), "File");
+        adapter.addFragment(new Fragment4(), "Info");
+        viewPager.setAdapter(adapter);
+    }
 
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                final Room room=rooms.get(position);
-                final MyViewHolder myViewHolder=(MyViewHolder)holder;
-            SwipeMenuLayout itemView=(SwipeMenuLayout)myViewHolder.itemView;
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "Hi " + room.userName, Toast.LENGTH_SHORT).show();
-                }
-            });
-            myViewHolder.btGood.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(myViewHolder.itemView.getContext(), "Good", Toast.LENGTH_SHORT).show();
-                }
-            });
-            myViewHolder.btOpen.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "Open " + room.userName, Toast.LENGTH_SHORT).show();
-                }
-            });
-            myViewHolder.btDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    rooms.remove(myViewHolder.getAdapterPosition());
-                    mAdapter.notifyItemRemoved(myViewHolder.getAdapterPosition());
-                }
-            });
-            myViewHolder.tvName.setText("ChatRoom:"+room.userId);
-            //boolean swipeEnable = swipeEnableByViewType(getItemViewType(position));
-            myViewHolder.tvSwipeEnable.setText(room.userName );
-
-            /**
-             * optional
-             */
-            itemView.setSwipeEnable(true);
-            itemView.setOpenInterpolator(mRecyclerView.getOpenInterpolator());
-            itemView.setCloseInterpolator(mRecyclerView.getCloseInterpolator());
-
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
         }
 
         @Override
-        public int getItemCount() {
-            return rooms.size();
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
         }
 
-    }
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView tvName;
-        TextView tvSwipeEnable;
-        View btGood;
-        View btOpen;
-        View btDelete;
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            tvName = (TextView) itemView.findViewById(R.id.tvName);
-            tvSwipeEnable = (TextView) itemView.findViewById(R.id.tvSwipeEnable);
-            btGood = itemView.findViewById(R.id.btGood);
-            btOpen = itemView.findViewById(R.id.btOpen);
-            btDelete = itemView.findViewById(R.id.btDelete);
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
         }
-    }
 
-    class Room{
-        private int userId;
-        private String userName;
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
 
-        Room(int userId,String userName){
-
-            this.userId=userId;
-            this.userName=userName;
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 }
