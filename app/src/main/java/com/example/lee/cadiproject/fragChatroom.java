@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fragment1 extends Fragment {
+public class fragChatroom extends Fragment {
 
     private Context mContext;
     private List<Room> rooms;
